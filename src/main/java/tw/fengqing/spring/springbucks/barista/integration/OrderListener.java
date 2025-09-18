@@ -47,14 +47,14 @@ public class OrderListener {
             log.info("Receive a new Order {}. Waiter: {}. Customer: {}",
                     id, o.getWaiter(), o.getCustomer());
             
-            // 設置為製作中狀態
-            o.setState(OrderState.BREWING);
+            // 設置為製作完成狀態
+            o.setState(OrderState.BREWED);
             o.setBarista(barista);
             orderRepository.save(o);
             log.info("Order {} is READY.", id);
             // 使用 StreamBridge 發送完成訂單消息
             Message<Long> message = MessageBuilder.withPayload(id).build();
-            streamBridge.send(Waiter.FINISHED_ORDERS, message);
+            streamBridge.send("finishedOrders-out-0", message);
         };
     }
 }
